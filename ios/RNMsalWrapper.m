@@ -37,7 +37,7 @@ RCT_EXPORT_METHOD(auth:(id)json successCallback:(RCTResponseSenderBlock)successC
         }
         else
         {
-            errorCallback(@[]);
+            errorCallback(@[error]);
         }
     }];
 }
