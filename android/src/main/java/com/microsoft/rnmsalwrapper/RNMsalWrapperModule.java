@@ -2,6 +2,7 @@
 package com.microsoft.rnmsalwrapper;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -34,14 +35,18 @@ public class RNMsalWrapperModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void acquireToken(ReadableMap options, Callback successCallback) {
+      Log.d("msal","acquire token");
     final ArrayList<Object> scopeObjectList = options.hasKey("scopes") ? options.getArray("scopes").toArrayList() : null;
     final String[] scopes = objectArrayListToStringArray(scopeObjectList);
     final String clientId = options.hasKey("clientId") ? options.getString("clientId") : null;
     final Activity currentActivity = this.getReactApplicationContext().getCurrentActivity();
 
+    Log.d("msal", clientId);
+
     getApplication(clientId, new applicationCallback() {
         @Override
         public void onSuccess(IPublicClientApplication application) {
+            Log.d("msal","acq_token");
             application.acquireToken(currentActivity, scopes, new AuthenticationCallback() {
                 @Override
                 public void onCancel() {
@@ -50,12 +55,12 @@ public class RNMsalWrapperModule extends ReactContextBaseJavaModule {
 
                 @Override
                 public void onSuccess(IAuthenticationResult authenticationResult) {
-
+                    Log.d("msal","acq_suc");
                 }
 
                 @Override
                 public void onError(MsalException exception) {
-
+                    Log.d("msal","acq_err");
                 }
             });
         }
@@ -108,16 +113,19 @@ public class RNMsalWrapperModule extends ReactContextBaseJavaModule {
   }
 
   private void getApplication(final String clientId, final applicationCallback callback) {
-      PublicClientApplication.create(this.getReactApplicationContext(), clientId, null,
+      Log.d("msal","getapp " + clientId);
+
+      PublicClientApplication.create(this.getReactApplicationContext(), clientId,
               new IPublicClientApplication.ApplicationCreatedListener() {
                   @Override
                   public void onCreated(IPublicClientApplication application) {
+                      Log.d("msal","getapp_suc");
                       callback.onSuccess(application);
                   }
 
                   @Override
                   public void onError(MsalException exception) {
-                      callback.onError(exception);
+                      Log.d("msal","getapp_err"); callback.onError(exception);
                   }
               }
       );
