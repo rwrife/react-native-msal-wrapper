@@ -45,6 +45,7 @@ public class RNMsalWrapperModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void acquireToken(final ReadableMap options, final Callback successCallback) {
+      Log.d("msal","acquire token");
     final ArrayList<Object> scopeObjectList = options.hasKey("scopes") ? options.getArray("scopes").toArrayList() : null;
     final String[] scopes = objectArrayListToStringArray(scopeObjectList);
     final String clientId = options.hasKey("clientId") ? options.getString("clientId") : null;
@@ -52,9 +53,13 @@ public class RNMsalWrapperModule extends ReactContextBaseJavaModule {
             : buildRedirectUri().toString();
     final Activity currentActivity = this.getReactApplicationContext().getCurrentActivity();
 
+    Log.d("msal", clientId);
+
     getApplication(clientId, redirectUri, new applicationCallback() {
         @Override
         public void onSuccess(IMultipleAccountPublicClientApplication application) {
+            Log.d("msal","acq_token");
+
             AcquireTokenParameters interactiveParameters = new AcquireTokenParameters.Builder()
                     .startAuthorizationFromActivity(getCurrentActivity())
                     .withScopes(Arrays.asList(scopes))
@@ -66,7 +71,7 @@ public class RNMsalWrapperModule extends ReactContextBaseJavaModule {
 
         @Override
         public void onError(MsalException error) {
-
+            Log.d("msal", error.getMessage());
         }
     });
 
@@ -223,4 +228,6 @@ public class RNMsalWrapperModule extends ReactContextBaseJavaModule {
               }
       );
   }
+
+
 }
