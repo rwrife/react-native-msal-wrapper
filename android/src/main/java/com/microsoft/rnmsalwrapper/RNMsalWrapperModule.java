@@ -104,6 +104,8 @@ public class RNMsalWrapperModule extends ReactContextBaseJavaModule {
                                     .build();
 
                             application.acquireTokenSilentAsync(silentParameters);
+                        } catch (NullPointerException ex) {
+
                         } catch (MsalException ex) {
 
                         } catch (InterruptedException ex) {
